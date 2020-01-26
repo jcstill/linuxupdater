@@ -19,17 +19,16 @@
 if [ "$1" == "--copyright" ];then
         echo "UPDATE.sh Copyright (C) 2020  Jacob Still"
         echo "This program comes with ABSOLUTELY NO WARRANTY"
-        echo "This is free software, and you are welcome to redistribute it"
-        echo "under certain conditions"
+	echo "This is free software, and you are welcome to redistribute it"
+	echo "under certain conditions"
 	exit
 fi
-
 if [ "$1" == "--help" ];then
-        echo " "
-        echo " "
-        echo " "
-        echo " "
-        exit
+	echo " "
+	echo " "
+	echo " "
+	echo " "
+	exit
 fi
 
 DISTRO="$(cat /etc/*-release | grep ID_LIKE | cut -c9- | sed 's/\"//g' | awk '{ print $1}')"
