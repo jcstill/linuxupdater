@@ -41,12 +41,12 @@ fi
 
 echo $DISTRO based machine...
 #exit
-if [ "$DISTRO" == "debian" ] || [ "$DISTRO" == "ubuntu" ];then
+if [ "$DISTRO" == "debian" ] || [ "$DISTRO" == "ubuntu" ] || [ "$DISTRO" == "deepin" ];then
 	echo using apt-get...
 	apt-get update -y
 	apt-get upgrade -y
 #	apt-get autoremove -y
-elif [ "$DISTRO" == "rhel" ];then
+elif [ "$DISTRO" == "rhel" ] || [ "$DISTRO" == "fedora" ];then
 	echo using yum...
 	yum update
 #	yum -y install epel-release
@@ -57,14 +57,22 @@ elif [ "$DISTRO" == "arch" ];then
 elif [ "$DISTRO" == "gentoo" ];then
 	emerge --sync
 	emerge --update --deep --with-bdeps=y @world
-elif [ "$DISTRO" == "suse" ];then
+elif [ "$DISTRO" == "slackware" ];then
+	slackpkg update gpg
+	slackpkg update
+elif [ "$DISTRO" == "suse" ] || [ "$DISTRO" == "opensuse" ];then
 	echo using zypper...
 	zypper refresh
 	zypper update
+elif [ "$DISTRO" == "OpenBSD" ];then
+	echo using pkg_add
+	pkg_add -uvi
 elif [ "$DISTRO" == "FreeBSD" ];then
-	echo using freebsd-update...
-	freebsd-update fetch
-	freebsd-update install
+	echo using pkg...
+	pkg update
+	pkg upgrade
+#	freebsd-update fetch
+#	freebsd-update install
 #	pfSense-upgrade -udy
 else
 	echo "UPDATE.sh detected your system is: $DISTRO"
