@@ -16,35 +16,60 @@
 
 #!/bin/bash
 
-if [ "$1" == "help" ];then
+if [ "$1" == "--copyright" ];then
         echo "UPDATE.sh Copyright (C) 2020  Jacob Still"
         echo "This program comes with ABSOLUTELY NO WARRANTY"
         echo "This is free software, and you are welcome to redistribute it"
         echo "under certain conditions"
+	exit
+fi
+
+if [ "$1" == "--help" ];then
+        echo " "
+        echo " "
+        echo " "
+        echo " "
+        exit
 fi
 
 DISTRO="$(cat /etc/*-release | grep ID_LIKE | cut -c9- | sed 's/\"//g' | awk '{ print $1}')"
 if [ -z "$DISTRO" ];then
+	DISTRO="$(cat /etc/*-release | grep ID | grep -v _ID | grep -v ID_ | cut -c4- | sed 's/\"//g' | awk '{ print $1}')"
+fi
+if [ -z "$DISTRO" ];then
         DISTRO="$(uname)"
 fi
-echo Update script for $DISTRO based machines:
-if [ "$DISTRO" == "debian" ];then
-        echo Using apt...
-        sudo apt update -y
-        sudo apt upgrade -y
-        sudo apt autoremove -y
-elif [ "$DISTRO" == "ubuntu" ];then
-        echo Using apt...
-        sudo apt update -y
-        sudo apt upgrade -y
-        sudo apt autoremove -y
+
+echo $DISTRO based machine...
+#exit
+if [ "$DISTRO" == "debian" ] || [ "$DISTRO" == "ubuntu" ];then
+	echo using apt-get...
+	apt-get update -y
+	apt-get upgrade -y
+#	apt-get autoremove -y
 elif [ "$DISTRO" == "rhel" ];then
-        echo Using yum...
-        yum update
-        yum -y install epel-release
-        yum -y install curl jq
+	echo using yum...
+	yum update
+#	yum -y install epel-release
+#	yum -y install curl jq
+elif [ "$DISTRO" == "arch" ];then
+	echo using pacman...
+	pacman -Syu
+elif [ "$DISTRO" == "gentoo" ];then
+	emerge --sync
+	emerge --update --deep --with-bdeps=y @world
+elif [ "$DISTRO" == "suse" ];then
+	echo using zypper...
+	zypper refresh
+	zypper update
 elif [ "$DISTRO" == "FreeBSD" ];then
-#       freebsd-update fetch
-#       freebsd-update install
-        pfSense-upgrade -udy
+	echo using freebsd-update...
+	freebsd-update fetch
+	freebsd-update install
+#	pfSense-upgrade -udy
+else
+	echo "UPDATE.sh detected your system is: $DISTRO"
+	echo "#DISTRO is not yet supported. Please create an issue at:"
+	echo "https://github.com/jcstill/linuxupdater/issues"
+	echo "thanks"
 fi
